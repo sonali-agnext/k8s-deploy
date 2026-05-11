@@ -1,0 +1,53 @@
+# Environment name prefix for dev
+namePrefix: "dev-"
+
+# Replica count for dev environment
+replicaCount: 1
+
+# Image configuration (override if needed)
+image:
+  repository: assaying
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+# Pod labels for dev with Datadog tags
+podLabels:
+  app: assaying
+  tier: backend 
+  tags.datadoghq.com/env: dev
+  tags.datadoghq.com/service: devassaying
+  tags.datadoghq.com/version: "1.0"
+
+# Datadog tags configuration
+datadogTags:
+  enabled: true
+  env: dev
+  service: devassaying
+  version: "1.0"
+
+# Container configuration for dev
+container:
+  name: assaying-backend
+  port: 9990  # Dev uses port 9990 instead of 80
+  # Spring Boot profile argument
+  args:
+    - "--spring.profiles.active=assaying_dev"
+  # Environment variables for dev
+  env:
+    - name: NODE_ENV
+      value: "dev"
+
+# Resource limits for dev
+resources:
+  requests:
+    memory: 256Mi
+  limits:
+    memory: 1Gi
+
+# Service configuration for dev
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 9990  # Service routes to container port 9990
+  protocol: TCP
+  annotations: {}
